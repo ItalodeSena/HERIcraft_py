@@ -4,6 +4,9 @@
 # MIT License
 # Please see the LICENSE file that should have been included as part of this package.
 
+# This file has been modified to be compatible with Irish geodata
+# Modified by Lasith-Niro
+
 import os
 import sys
 import time
@@ -23,9 +26,13 @@ parser = argparse.ArgumentParser(
 # parser.add_argument("--city", dest="city", help="Name of the city")
 # parser.add_argument("--state", dest="state", help="Name of the state")
 # parser.add_argument("--country", dest="country", help="Name of the country")
+
+
 parser.add_argument("--bbox", dest="bbox", help="Bounding box of the city")
 parser.add_argument("--path", dest="path", help="Path to the minecraft world")
 parser.add_argument("--scale", dest="scale", help="Scale of the city")
+parser.add_argument("--z", dest="z", help="Initial z coordinate", default=0, type=int)
+
 parser.add_argument(
     "--debug",
     dest="debug",
@@ -33,7 +40,10 @@ parser.add_argument(
     action="store_true",
     help="Enable debug mode",
 )
+
 args = parser.parse_args()
+
+
 if args.bbox is None or args.path is None:
     print("Error! Missing arguments")
     os._exit(1)
@@ -43,6 +53,7 @@ np.seterr(all="raise")
 np.set_printoptions(threshold=sys.maxsize)
 
 processStartTime = time.time()
+
 air = anvil.Block("minecraft", "air")
 stone = anvil.Block("minecraft", "stone")
 grass_block = anvil.Block("minecraft", "grass_block")
@@ -78,6 +89,7 @@ dirt = anvil.Block("minecraft", "dirt")
 glowstone = anvil.Block("minecraft", "glowstone")
 sponge = anvil.Block("minecraft", "sponge")
 
+
 regions = {}
 for x in range(0, 3):
     for z in range(0, 3):
@@ -102,6 +114,27 @@ def fillBlocks(block, x1, y1, z1, x2, y2, z2):
 
 
 mcWorldPath = args.path
+# if mcWorldPath/region is exists, ask to delete it
+if os.path.exists(mcWorldPath + "/region"):
+    # ask in red
+
+    print(
+        f"\033[91m Warning! \033[0m {mcWorldPath}/region is exists.\n"
+        + "Do you want to delete it? (y/n) ",
+        end="",
+    )
+    # TODO: wait 10 seconds for answer and if not answered, delete it
+    answer = input()
+    if answer == "y":
+        for filename in os.listdir(mcWorldPath + "/region"):
+            os.remove(mcWorldPath + "/region/" + filename)
+    else:
+        print("Aborting...")
+        os._exit(1)
+# if mcWorldPath is not exists make a new dirs for mcWorldPath and region
+if not (os.path.exists(mcWorldPath)):
+    os.makedirs(mcWorldPath + "/region")
+
 if mcWorldPath[-1] == "/":
     mcWorldPath = mcWorldPath[:-1]
 
@@ -130,8 +163,10 @@ def run():
     #     s = s.replace('\'','\"')
     #     rawdata = json.loads(s)
 
-    
+    # crawl data from OSM using bbox
     rawdata = getData(args.bbox, args.debug)
+
+    # create an image array from rawdata
     imgarray = processData(rawdata, args)
 
     print("Generating minecraft world...")
@@ -151,12 +186,12 @@ def run():
             print(f"Pixel {ElementIncr + 1}/{ElementsLen} ({progressPercentage}%)")
             lastProgressPercentage = progressPercentage
 
-        z = -60 #change by Lasith-Niro to adject the floating
+        z = args.z #-76 #change by Lasith-Niro to adject the floating
         for j in i:
             setBlock(dirt, x, 0, z)
             if j == 0:  # Ground
-                setBlock(light_gray_concrete, x, 1, z)
-            elif j == 10:  # Street
+                setBlock(light_gray_concrete, x, 1, z)                
+            elif j == 10:  # Street (road)
                 setBlock(black_concrete, x, 1, z)
                 setBlock(air, x, 2, z)
             elif j == 11:  # Footway
@@ -164,12 +199,6 @@ def run():
                 setBlock(air, x, 2, z)
             elif j == 12:  # Natural path
                 setBlock(cobblestone, x, 1, z)
-            elif j == 13:  # Bridge
-                setBlock(light_gray_concrete, x, 2, z)
-                setBlock(light_gray_concrete, x - 1, 2, z - 1)
-                setBlock(light_gray_concrete, x + 1, 2, z - 1)
-                setBlock(light_gray_concrete, x + 1, 2, z + 1)
-                setBlock(light_gray_concrete, x - 1, 2, z + 1)
             elif j == 14:  # Railway
                 setBlock(iron_block, x, 2, z)
             elif j == 20:  # Parking
@@ -204,21 +233,13 @@ def run():
                         setBlock(potatoes, x, 2, z)
             elif j == 32:  # Forest
                 setBlock(grass_block, x, 1, z)
-                randomChoice = 6#randint(0, 8)
+                randomChoice = randint(0, 8)
                 if randomChoice >= 0 and randomChoice <= 5:
                     setBlock(grass, x, 2, z)
-                elif randomChoice == 6:
-                    fillBlocks(log, x, 2, z, x, 8, z)
-                    fillBlocks(leaves, x - 2, 5, z - 2, x + 2, 6, z + 2)
-                    setBlock(air, x - 2, 6, z - 2)
-                    setBlock(air, x - 2, 6, z + 2)
-                    setBlock(air, x + 2, 6, z - 2)
-                    setBlock(air, x + 2, 6, z + 2)
-                    fillBlocks(leaves, x - 1, 7, z - 1, x + 1, 8, z + 1)
-                    setBlock(air, x - 1, 8, z - 1)
-                    setBlock(air, x - 1, 8, z + 1)
-                    setBlock(air, x + 1, 8, z - 1)
-                    setBlock(air, x + 1, 8, z + 1)
+                else:
+                    if args.debug: 
+                        print("[DEBUG] Adding a tree...")
+                    addTree(x, z)
             elif j == 33:  # Cemetery
                 setBlock(podzol, x, 1, z)
                 randomChoice = randint(0, 100)
@@ -249,6 +270,8 @@ def run():
                 setBlock(white_concrete, x, 0, z)
             elif j == 38:  # Water
                 setBlock(water, x, 1, z)
+            elif j == 13:  # Bridge
+                addBridge(x, z)
             elif j == 39:  # Raw grass
                 setBlock(grass_block, x, 1, z)
             elif j >= 50 and j <= 59:  # House corner
@@ -273,6 +296,7 @@ def run():
                     building_height = 32
 
                 fillBlocks(white_concrete, x, 1, z, x, building_height, z)
+
             elif j >= 60 and j <= 69:  # House wall
                 building_height = 4
                 if j == 61:
@@ -342,3 +366,24 @@ def run():
         + f"seconds ({((time.time() - processStartTime) / 60):.2f} minutes)"
     )
     os._exit(0)
+
+def addBridge(x, z):
+    setBlock(light_gray_concrete, x, 2, z)
+    setBlock(light_gray_concrete, x - 1, 2, z - 1)
+    setBlock(light_gray_concrete, x + 1, 2, z - 1)
+    setBlock(light_gray_concrete, x + 1, 2, z + 1)
+    setBlock(light_gray_concrete, x - 1, 2, z + 1)
+    
+
+def addTree(x, z):
+    fillBlocks(log, x, 2, z, x, 8, z)
+    fillBlocks(leaves, x - 2, 5, z - 2, x + 2, 6, z + 2)
+    setBlock(air, x - 2, 6, z - 2)
+    setBlock(air, x - 2, 6, z + 2)
+    setBlock(air, x + 2, 6, z - 2)
+    setBlock(air, x + 2, 6, z + 2)
+    fillBlocks(leaves, x - 1, 7, z - 1, x + 1, 8, z + 1)
+    setBlock(air, x - 1, 8, z - 1)
+    setBlock(air, x - 1, 8, z + 1)
+    setBlock(air, x + 1, 8, z - 1)
+    setBlock(air, x + 1, 8, z + 1)
