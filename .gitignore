@@ -193,4 +193,11 @@ pyrightconfig.json
 .ionide
 
 Output/*
+
+
+# ignore any jupyter notebook
+*.ipynb_checkpoints
+*.ipynb
+
+
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode

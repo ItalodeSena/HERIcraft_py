@@ -44,8 +44,9 @@ def getData(bbox, debug):
         os._exit(1)
 
     if debug:
-        with open("arnis-debug-raw_data.json", "w", encoding="utf-8") as f:
-            f.write(str(data))
+        out_file = "arnis-debug-raw_data.json"
+        with open(out_file, "w") as f:
+            json.dump(data, f)
     return data
 
 

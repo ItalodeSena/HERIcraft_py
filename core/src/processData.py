@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # This file has been modified to be compatible with Irish geodata - by Lasith-Niro
-
+import os
 from time import time
 from cv2 import imwrite
 import numpy as np
@@ -18,6 +18,8 @@ import geopandas as gpd
 from rasterio.features import geometry_mask
 from rasterio.transform import from_origin
 
+from .utils import get_height_from_flask_app
+from tqdm import tqdm
 # add tqdm
 
 # def processData(data, args):
@@ -102,37 +104,35 @@ def convert_lat_long_to_x_z(lat, long):
     # z = -z  # flip z axis to match Minecraft
     return int(x), int(z)
 
+MIN_HEIGHT = 0
+MAX_HEIGHT = 100
+
+def parseElevation(elevation):
+    elevation = int(elevation)
+    if elevation < MIN_HEIGHT:
+        elevation = MIN_HEIGHT
+    elif elevation > MAX_HEIGHT:
+        elevation = MAX_HEIGHT
+    return elevation
+
+
+
 def processData(data, args):
     print("Parsing data...")
     resDownScaler = float(args.scale)
     processingStartTime = time()
-
-    # proj_string = "+proj=ortho +lat_0=60.00 +lon_0=23.0000"
-    # ortho = CRS.from_proj4(proj_string)
-    # ortho_proj = pyproj.Transformer.from_crs("epsg:4326", ortho, always_xy=True).transform
-    
-    source_crs = pyproj.CRS("epsg:4326")  # WGS 84, which is commonly used for latitude and longitude
-    target_crs = pyproj.CRS("epsg:3785")  # Web Mercator (epsg:3785)
-    transformer = pyproj.Transformer.from_crs(source_crs, target_crs, always_xy=True)
 
     latitudes = []
     longitudes = []
 
     print(f"[INFO] Processing {len(data['elements'])} elements...")
     
-    for element in data["elements"]:
+    for element in tqdm(data["elements"], desc="Converting coordinates", total=len(data["elements"])):
         if element["type"] == "node":
             o_x, o_y = convert_lat_long_to_x_z(element["lat"], element["lon"])
             latitudes.append(o_x)
             longitudes.append(o_y)
 
-
-            # ortho_x, ortho_y = transformer.transform(element['lat'], element['lon'])
-            # # print(f"{element['lat']} -> {ortho_x}, {element['lon']} -> {ortho_y}")
-            # latitudes.append(ortho_x)
-            # longitudes.append(ortho_y)
-        
-    # latitudes, longitudes = np.array(latitudes), np.array(longitudes)
     min_lat, max_lat = min(latitudes), max(latitudes)
     min_lon, max_lon = min(longitudes), max(longitudes)
 
@@ -204,6 +204,7 @@ def processData(data, args):
 
 
     nodesDict = {}
+    xy_mapper = {}
     for element in data["elements"]:
         if(element['type'] == 'node'):
             # ortho_x, ortho_y = transformer.transform(element["lat"], element["lon"])
@@ -213,6 +214,8 @@ def processData(data, args):
             ortho_x -= min_lat
             ortho_y -= min_lon
             nodesDict[element["id"]] = [ortho_x, ortho_y]
+            # setting xy to lat/lon mapper for elevation
+            xy_mapper[f"({ortho_x}, {ortho_y})"] = [element["lat"], element["lon"]]
 
 
     orig_posDeterminationCoordX = 0
@@ -240,6 +243,7 @@ def processData(data, args):
                     map_posDeterminationCoordY = round(
                         element["nodes"][0][1] / resDownScaler
                     )
+                    
 
                 for coordinate in element["nodes"]:
                     cordX = round(coordinate[0] / resDownScaler)
@@ -266,9 +270,14 @@ def processData(data, args):
     minMaxDistX = maxBuilding[0] - minBuilding[0] 
     minMaxDistY = maxBuilding[1] - minBuilding[1]
 
+
+
+    node_mapper = {}
     for i, element in enumerate(data["elements"]):
         if element["type"] == "way":
             for j, node in enumerate(element["nodes"]):
+                original_x = element["nodes"][j][0]
+                original_y = element["nodes"][j][1]
                 subtractedMinX = (
                     round(element["nodes"][j][0] / resDownScaler) - minBuilding[0]
                 )
@@ -293,6 +302,12 @@ def processData(data, args):
                     element["nodes"][j][0] = minMaxDistX - 1
                 if element["nodes"][j][1] >= minMaxDistY:
                     element["nodes"][j][1] = minMaxDistY - 1
+                updated_x = element["nodes"][j][0]
+                updated_y = element["nodes"][j][1]
+                # setting new xy (reduced to image size) to old xy mapper for elevation
+                node_mapper[f"({updated_x}, {updated_y})"] = [original_x, original_y]
+
+
     lowestElementX = min_lat
     lowestElementY = min_lon
     if args.debug:
@@ -327,12 +342,107 @@ def processData(data, args):
 
     img.fill(0)
     imgLanduse = img.copy()
+    imgTerrain = img.copy()
 
     print("Processing data...")
 
     ElementIncr = 0
     ElementsLen = len(data["elements"])
     lastProgressPercentage = 0
+    
+    # print("[INFO] Processing Terrain")
+    for xx in tqdm(range(minMaxDistX), desc="Processing Terrain"):
+        _elev = 0
+        for yy in range(minMaxDistY):
+            try:
+                lat, long = node_mapper[f"({xx}, {yy})"]
+                xy_mapper_key = f"({lat}, {long})"
+                x, y = xy_mapper[xy_mapper_key]
+                elev = get_height_from_flask_app(x, y)
+                elev = parseElevation(elev)
+                _elev = elev
+            except:
+                elev = _elev
+            # print(f"({xx}, {yy}) > {elev}")
+            imgTerrain[yy][xx] = elev
+            
+    # for element in reversed(data["elements"]):
+    #     if element["type"] == "way":
+    #         previousElement = (0, 0)
+    #         for coordinate in element['nodes']:
+    #             if previousElement != (0, 0):
+    #                 key = ""
+    #                 elevation = 0
+    #                 for i in bresenham( coordinate[0],coordinate[1],previousElement[0],previousElement[1],):
+    #                     try:
+    #                         node_mapper_key = f"({coordinate[0]}, {coordinate[1]})"
+    #                         lat, long = node_mapper[node_mapper_key]
+    #                         xy_mapper_key = f"({lat}, {long})"
+    #                         x, y = xy_mapper[xy_mapper_key]
+    #                         print(">>>", (x, y), end=" => ")
+    #                         if key != f"({x}, {y})":
+    #                             key = f"({x}, {y})"
+    #                             # TODO: ignore repetive API calls
+    #                             elev = get_height_from_flask_app(x, y)
+    #                             elev = parseElevation(elev)
+    #                             elevation = elev
+                                
+    #                         print(elevation)
+    #                         if imgTerrain[i[1]][i[0]] == 0:
+    #                             imgTerrain[i[1]][i[0]] = elevation
+    #                     except:
+    #                         pass        
+    #             previousElement = (coordinate[0], coordinate[1])
+
+    # for element in reversed(data["elements"]):
+    #     if element["type"] == "way":
+    #         # print(element['nodes'])
+    #         previousElement = (0, 0)
+    #         cornerAddup = (0, 0, 0)
+    #         currentLanduse = np.array([[0, 0]])
+    #         for coordinate in element['nodes']:
+    #             if previousElement != (0, 0):
+    #                 print(coordinate, end=" ")
+    #                 # get lat and long from node coordinates without xy_mapper
+    #                 node_mapper_key = f"({coordinate[0]}, {coordinate[1]})"
+    #                 lat, long = node_mapper[node_mapper_key]
+    #                 xy_mapper_key = f"({lat}, {long})"
+    #                 try:
+    #                     x, y = xy_mapper[xy_mapper_key]
+    #                     print(">", (x, y))
+    #                     elev = get_height_from_flask_app(x, y)
+    #                     print(elev)
+                    
+    #                     for i in bresenham( coordinate[0],coordinate[1],previousElement[0],previousElement[1],):
+    #                         if imgTerrain[i[1]][i[0]] == 0:
+    #                             print(f"Height : {elev}")
+    #                             imgTerrain[i[1]][i[0]] = elev
+
+    #                             currentLanduse = np.append(
+    #                                 currentLanduse, [[coordinate[0], coordinate[1]]], axis=0
+    #                             )
+    #                             cornerAddup = (
+    #                                 cornerAddup[0] + coordinate[0],
+    #                                 cornerAddup[1] + coordinate[1],
+    #                                 cornerAddup[2] + 1,
+    #                             )
+    #                     previousElement = (coordinate[0], coordinate[1])
+    #                         # print(f"Landuse: {landuseType}")
+
+    #                     if cornerAddup != (0, 0, 0):
+    #                         imgTerrain = floodFill(
+    #                             imgTerrain,
+    #                             round(cornerAddup[1] / cornerAddup[2]),
+    #                             round(cornerAddup[0] / cornerAddup[2]),
+    #                             elev,
+    #                             currentLanduse,
+    #                             minMaxDistX,
+    #                             minMaxDistY,
+    #                         )
+    #                 except Exception as e:
+    #                     print(f"An error occurred: {str(e)}")
+    #                     continue
+    print("[INFO] Processing OSM features")
     for element in reversed(data["elements"]):
         progressPercentage = round(100 * (ElementIncr + 1) / ElementsLen)
         if (
@@ -342,19 +452,13 @@ def processData(data, args):
             print(f"Element {ElementIncr + 1}/{ElementsLen} ({progressPercentage}%)")
             lastProgressPercentage = progressPercentage
 
-        if element["type"] == "way" and "tags" in element:
+        if (element["type"] == "way") and ("tags" in element):
             if "building" in element["tags"]:
                 # print("Building")
                 previousElement = (0, 0)
                 cornerAddup = (0, 0, 0)
                 currentBuilding = np.array([[0, 0]])
                 for coordinate in element["nodes"]:
-                    # try:
-                    #     buildingHeight = int(element["tags"]["building:levels"])
-                    #     if args.debug:
-                    #         print(f"Building height [OSM]: {buildingHeight}")
-                    # except Exception:
-                    #     buildingHeight = 2
                     buildingHeight = element["tags"].get("building:levels", 2)
                     # if args.debug:
                     #     print(f"Building height [OSM]: {buildingHeight}")
@@ -370,9 +474,6 @@ def processData(data, args):
                                 buildingHeight = 6
                             else:
                                 buildingHeight = 9
-
-                        # if ("building:levels" in element["tags"] and element["tags"]["building:levels"].isnumeric() and int(float(element["tags"]["building:levels"])) <= 8 and int(float(element["tags"]["building:levels"])) >= 1 ):
-                        #     buildingHeight = str(int(float(element["tags"]["building:levels"])) - 1)
 
                         for i in bresenham(
                             coordinate[0],
@@ -416,10 +517,9 @@ def processData(data, args):
                         )
                     previousElement = (coordinate[0], coordinate[1])
             
-                # print(f"Builiding: {buildingHeight}") 
-                if args.debug:
-                    if "building:levels" in element["tags"]:
-                        print(f"Height [OSM]>> {element['tags']['building:levels']}    Height [MC]>> {buildingHeight}")
+                # if args.debug:
+                #     if "building:levels" in element["tags"]:
+                #         print(f"Height [OSM]>> {element['tags']['building:levels']}    Height [MC]>> {buildingHeight}")
 
                 if cornerAddup != (0, 0, 0):
                     img = floodFill(
@@ -807,11 +907,17 @@ def processData(data, args):
 
     img = np.fliplr(img)
     img = np.rot90(img, 1)
+
+    imgTerrain = np.fliplr(imgTerrain)
+    imgTerrain = np.rot90(imgTerrain, 1)
+
     # flip
     # img2 = np.rot90(img2, 1) # need to check here
     
     if args.debug:
         imwrite("arnis-debug-map.png", img)
         print("[INFO] Map image saved to arnis-debug-map.png")
+        imwrite("arnis-debug-terrain.png", imgTerrain)
+        print("[INFO] Terrain image saved to arnis-debug-terrain.png")
     # flip and return the image
-    return img
+    return img , imgTerrain

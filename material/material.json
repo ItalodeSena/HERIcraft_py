@@ -1,0 +1,692 @@
+[
+  {
+    "type": "building",
+    "subtype": "apartments",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "barracks",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "bungalow",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "cabin",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "detached",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "dormitory",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "farm",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "ger",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "hotel",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "house",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "houseboat",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "residential",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "semidetached_house",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "static_caravan",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "stilt_house",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "terrace",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "tree_house",
+    "material": "BRICKS"
+  },
+  {
+    "type": "building",
+    "subtype": "commercial",
+    "material": "LIGHT_BLUE_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "industrial",
+    "material": "LIGHT_BLUE_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "kiosk",
+    "material": "LIGHT_BLUE_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "office",
+    "material": "LIGHT_BLUE_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "retail",
+    "material": "LIGHT_BLUE_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "supermarket",
+    "material": "LIGHT_BLUE_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "warehouse",
+    "material": "LIGHT_BLUE_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "cathedral",
+    "material": "LIGHT_GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "chapel",
+    "material": "LIGHT_GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "church",
+    "material": "LIGHT_GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "kingdom_hall",
+    "material": "LIGHT_GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "monastery",
+    "material": "LIGHT_GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "mosque",
+    "material": "LIGHT_GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "presbytery",
+    "material": "LIGHT_GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "shrine",
+    "material": "LIGHT_GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "synagogue",
+    "material": "LIGHT_GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "temple",
+    "material": "LIGHT_GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "bakehouse",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "bridge",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "civic",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "college",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "fire_station",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "government",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "gatehouse",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "hospital",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "kindergarten",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "museum",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "public",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "school",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "toilets",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "train_station",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "transportation",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "university",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "barn",
+    "material": "BROWN_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "conservatory",
+    "material": "BROWN_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "cowshed",
+    "material": "BROWN_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "farm_auxiliary",
+    "material": "BROWN_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "greenhouse",
+    "material": "BROWN_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "slurry_tank",
+    "material": "BROWN_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "stable",
+    "material": "BROWN_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "sty",
+    "material": "BROWN_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "livestock",
+    "material": "BROWN_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "grandstand",
+    "material": "BROWN_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "pavilion",
+    "material": "BROWN_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "riding_hall",
+    "material": "BROWN_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "sports_hall",
+    "material": "BROWN_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "stadium",
+    "material": "BROWN_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "hangar",
+    "material": "GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "hut",
+    "material": "GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "shed",
+    "material": "GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "carport",
+    "material": "GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "garage",
+    "material": "GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "garages",
+    "material": "GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "parking",
+    "material": "GRAY_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "digester",
+    "material": "YELLOW_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "service",
+    "material": "YELLOW_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "transformer_tower",
+    "material": "YELLOW_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "water_tower",
+    "material": "YELLOW_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "storage_tank",
+    "material": "YELLOW_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "silo",
+    "material": "YELLOW_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "beach_hut",
+    "material": "WHITE_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "bunker",
+    "material": "WHITE_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "castle",
+    "material": "WHITE_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "construction",
+    "material": "WHITE_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "container",
+    "material": "WHITE_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "military",
+    "material": "WHITE_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "ruins",
+    "material": "WHITE_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "tent",
+    "material": "WHITE_CONCRETE"
+  },
+  {
+    "type": "building",
+    "subtype": "tower",
+    "material": "WHITE_CONCRETE"
+  },
+  {
+    "type": "natural",
+    "subtype": "beach",
+    "material": "SAND"
+  },
+  {
+    "type": "natural",
+    "subtype": "sand",
+    "material": "SAND"
+  },
+  {
+    "type": "natural",
+    "subtype": "shoal",
+    "material": "SAND"
+  },
+  {
+    "type": "natural",
+    "subtype": "mud",
+    "material": "COARSE_DIRT"
+  },
+  {
+    "type": "natural",
+    "subtype": "shingle",
+    "material": "GRAVEL"
+  },
+  {
+    "type": "natural",
+    "subtype": "grassland",
+    "material": "GRASS_BLOCK"
+  },
+  {
+    "type": "natural",
+    "subtype": "heath",
+    "material": "GRASS_BLOCK"
+  },
+  {
+    "type": "natural",
+    "subtype": "water",
+    "material": "WATER"
+  },
+  {
+    "type": "natural",
+    "subtype": "bay",
+    "material": "WATER"
+  },
+  {
+    "type": "natural",
+    "subtype": "wetland",
+    "material": "WATER"
+  },
+  {
+    "type": "place",
+    "subtype": "sea",
+    "material": "WATER"
+  },
+  {
+    "type": "place",
+    "subtype": "ocean",
+    "material": "WATER"
+  },
+  {
+    "type": "landuse",
+    "subtype": "grass",
+    "material": "GRASS_BLOCK"
+  },
+  {
+    "type": "landuse",
+    "subtype": "meadow",
+    "material": "GRASS_BLOCK"
+  },
+  {
+    "type": "landuse",
+    "subtype": "greenfield",
+    "material": "GRASS_BLOCK"
+  },
+  {
+    "type": "landuse",
+    "subtype": "landfill",
+    "material": "GRAY_CONCRETE_POWDER"
+  },
+  {
+    "type": "surface",
+    "subtype": "paved",
+    "material": "BLACK_CONCRETE"
+  },
+  {
+    "type": "surface",
+    "subtype": "unhewn_cobblestone",
+    "material": "COBBLESTONE"
+  },
+  {
+    "type": "surface",
+    "subtype": "cobblestone",
+    "material": "COBBLESTONE"
+  },
+  {
+    "type": "surface",
+    "subtype": "shells",
+    "material": "COBBLESTONE"
+  },
+  {
+    "type": "surface",
+    "subtype": "rock",
+    "material": "COBBLESTONE"
+  },
+  {
+    "type": "surface",
+    "subtype": "asphalt",
+    "material": "BLACK_CONCRETE"
+  },
+  {
+    "type": "surface",
+    "subtype": "chipseal",
+    "material": "STONE"
+  },
+  {
+    "type": "surface",
+    "subtype": "concrete",
+    "material": "STONE"
+  },
+  {
+    "type": "surface",
+    "subtype": "concrete:lanes",
+    "material": "STONE"
+  },
+  {
+    "type": "surface",
+    "subtype": "concrete:plates",
+    "material": "STONE"
+  },
+  {
+    "type": "surface",
+    "subtype": "paving_stones",
+    "material": "STONE_BRICKS"
+  },
+  {
+    "type": "surface",
+    "subtype": "sett",
+    "material": "STONE_BRICKS"
+  },
+  {
+    "type": "surface",
+    "subtype": "grass_paver",
+    "material": "MOSSY_STONE_BRICKS"
+  },
+  {
+    "type": "surface",
+    "subtype": "brick",
+    "material": "BRICKS"
+  },
+  {
+    "type": "surface",
+    "subtype": "metal",
+    "material": "IRON_BLOCK"
+  },
+  {
+    "type": "surface",
+    "subtype": "wood",
+    "material": "OAK_PLANKS"
+  },
+  {
+    "type": "surface",
+    "subtype": "woodchips",
+    "material": "DIRT_PATH"
+  },
+  {
+    "type": "surface",
+    "subtype": "rubber",
+    "material": "BLACK_WOOL"
+  },
+  {
+    "type": "surface",
+    "subtype": "unpaved",
+    "material": "DIRT_PATH"
+  },
+  {
+    "type": "surface",
+    "subtype": "compacted",
+    "material": "DIRT_PATH"
+  },
+  {
+    "type": "surface",
+    "subtype": "dirt",
+    "material": "DIRT_PATH"
+  },
+  {
+    "type": "surface",
+    "subtype": "earth",
+    "material": "DIRT_PATH"
+  },
+  {
+    "type": "surface",
+    "subtype": "ground",
+    "material": "DIRT_PATH"
+  },
+  {
+    "type": "surface",
+    "subtype": "mud",
+    "material": "DIRT_PATH"
+  },
+  {
+    "type": "surface",
+    "subtype": "fine_gravel",
+    "material": "GRAVEL"
+  },
+  {
+    "type": "surface",
+    "subtype": "gravel",
+    "material": "GRAVEL"
+  },
+  {
+    "type": "surface",
+    "subtype": "pebblestone",
+    "material": "GRAVEL"
+  },
+  {
+    "type": "surface",
+    "subtype": "sand",
+    "material": "SAND"
+  },
+  {
+    "type": "surface",
+    "subtype": "snow",
+    "material": "SNOW_BLOCK"
+  },
+  {
+    "type": "surface",
+    "subtype": "ice",
+    "material": "PACKED_ICE"
+  },
+  {
+    "type": "surface",
+    "subtype": "salt",
+    "material": "PACKED_ICE"
+  },
+  {
+    "type": "surface",
+    "subtype": "clay",
+    "material": "TERRACOTTA"
+  },
+  {
+    "type": "surface",
+    "subtype": "tartan",
+    "material": "RED_CONCRETE"
+  },
+  {
+    "type": "surface",
+    "subtype": "acrylic",
+    "material": "LIGHT_BLUE_CONCRETE"
+  },
+  {
+    "type": "surface",
+    "subtype": "carpet",
+    "material": "WHITE_WOOL"
+  },
+  {
+    "type": "surface",
+    "subtype": "any other value",
+    "material": "GRASS_BLOCK"
+  }
+]
