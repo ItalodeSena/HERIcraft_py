@@ -17,7 +17,8 @@ HERIcraft is a Python tool that allows users to create minecraft maps using Open
 
 ### Map Creation
 - Example 
-- ` python .\arnis.py --bbox "-9.1661, 54.1058, -9.1426, 54.1182" --path ".\BallinaMap"  --debug --scale 1`
+- `cd core`
+- ` python .\generate.py --bbox "-9.1661, 54.1058, -9.1426, 54.1182" --path ".\BallinaMap"  --debug --scale 1 -z 0`
 
 ## Contributing
 
