@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/craft_my_street" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
