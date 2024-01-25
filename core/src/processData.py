@@ -7,6 +7,7 @@ from time import time
 from cv2 import imwrite
 import numpy as np
 from random import randint
+from collections import deque
 
 from .bresenham import bresenham_2d as bresenham
 from .floodFill import floodFill
@@ -21,7 +22,7 @@ from rasterio.transform import from_origin
 from .utils import get_height_from_flask_app
 from tqdm import tqdm
 # add tqdm
-
+ 
 # def processData(data, args):
 #     gdf = gpd.read_file("osm_data.geojson")
 #     xmin, ymin, xmax, ymax = gdf.total_bounds
@@ -107,19 +108,44 @@ def convert_lat_long_to_x_z(lat, long):
 MIN_HEIGHT = 0
 MAX_HEIGHT = 100
 
-def parseElevation(elevation):
-    elevation = int(elevation)
-    if elevation < MIN_HEIGHT:
-        elevation = MIN_HEIGHT
-    elif elevation > MAX_HEIGHT:
-        elevation = MAX_HEIGHT
+# ceil the elevation to the nearest 10
+def ceilElevation(elevation):
+    elevation = math.ceil(elevation / 10.0)
     return elevation
 
+def parseElevation(elevation):
+    elevation = int(elevation)
+    if elevation <= MIN_HEIGHT:
+        elevation = MIN_HEIGHT
+    elif elevation >= MAX_HEIGHT:
+        elevation = MAX_HEIGHT
+    else:
+        elevation = ceilElevation(elevation)
+    return elevation
+
+def normalize_terrain(terrain_data):
+    """
+    Normalize the terrain data using Min-Max normalization.
+
+    Parameters:
+    - terrain_data: 2D numpy array representing the terrain
+
+    Returns:
+    - normalized_terrain: 2D numpy array with values in the range [0, 1]
+    """
+    # first convert the terrain data to a integer type
+    terrain_data = terrain_data.astype(np.int64)
+    bin_edges = [i for i in range(0, 101, 10)]
+    binned_terrain = (np.digitize(terrain_data, bins=bin_edges, right=True) - 1) * 10
+    return binned_terrain
 
 
 def processData(data, args):
     print("Parsing data...")
     resDownScaler = float(args.scale)
+    bbox = args.bbox
+    bbox = bbox.split(",")
+    bbox = [float(i) for i in bbox]
     processingStartTime = time()
 
     latitudes = []
@@ -325,7 +351,8 @@ def processData(data, args):
             "Map position determination reference coordinates: "
             + f"{map_posDeterminationCoordX}, {map_posDeterminationCoordY}"
         )
-        with open("arnis-debug-processed_data.json", "w", encoding="utf-8") as f:
+        # f"data/osm_{'_'.join(map(str, bbox))}_raw_data.json"
+        with open(f"data/osm_{'_'.join(map(str, bbox))}_processed_data.json", "w", encoding="utf-8") as f:
             f.write(str(data))
         print("=========================================")
         print(minMaxDistY)
@@ -342,7 +369,7 @@ def processData(data, args):
 
     img.fill(0)
     imgLanduse = img.copy()
-    imgTerrain = img.copy()
+    # imgTerrain = img.copy()
 
     print("Processing data...")
 
@@ -351,21 +378,24 @@ def processData(data, args):
     lastProgressPercentage = 0
     
     # print("[INFO] Processing Terrain")
-    for xx in tqdm(range(minMaxDistX), desc="Processing Terrain"):
-        _elev = 0
-        for yy in range(minMaxDistY):
-            try:
-                lat, long = node_mapper[f"({xx}, {yy})"]
-                xy_mapper_key = f"({lat}, {long})"
-                x, y = xy_mapper[xy_mapper_key]
-                elev = get_height_from_flask_app(x, y)
-                elev = parseElevation(elev)
-                _elev = elev
-            except:
-                elev = _elev
-            # print(f"({xx}, {yy}) > {elev}")
-            imgTerrain[yy][xx] = elev
-            
+    # for xx in tqdm(range(minMaxDistX), desc="Processing Terrain"):
+    #     for yy in range(minMaxDistY):
+    #         try:
+    #             lat, long = node_mapper[f"({xx}, {yy})"]
+    #             xy_mapper_key = f"({lat}, {long})"
+    #             x, y = xy_mapper[xy_mapper_key]
+    #             elev = get_height_from_flask_app(x, y)
+    #             elev = parseElevation(elev)
+    #         except:
+    #             elev = 0
+    #         # print(f"({xx}, {yy}) > {elev}")
+    #         imgTerrain[yy][xx] = elev
+
+    # # imgTerrain = np.squeeze(imgTerrain, axis=-1)
+    # # # imgTerrain = np.flip(imgTerrain, axis=1)
+    # imgTerrain = normalize_terrain(imgTerrain)
+    # imgTerrain = []
+           
     # for element in reversed(data["elements"]):
     #     if element["type"] == "way":
     #         previousElement = (0, 0)
@@ -908,8 +938,10 @@ def processData(data, args):
     img = np.fliplr(img)
     img = np.rot90(img, 1)
 
-    imgTerrain = np.fliplr(imgTerrain)
-    imgTerrain = np.rot90(imgTerrain, 1)
+    # imgTerrain = np.fliplr(imgTerrain)
+    # imgTerrain = np.rot90(imgTerrain, 1)
+    
+    # height_map = imgTerrain
 
     # flip
     # img2 = np.rot90(img2, 1) # need to check here
@@ -917,7 +949,7 @@ def processData(data, args):
     if args.debug:
         imwrite("arnis-debug-map.png", img)
         print("[INFO] Map image saved to arnis-debug-map.png")
-        imwrite("arnis-debug-terrain.png", imgTerrain)
-        print("[INFO] Terrain image saved to arnis-debug-terrain.png")
+        # imwrite("arnis-debug-terrain.png", height_map)
+        # print("[INFO] Terrain image saved to arnis-debug-terrain.png")
     # flip and return the image
-    return img , imgTerrain
+    return img #, height_map

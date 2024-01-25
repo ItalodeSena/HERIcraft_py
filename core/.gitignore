@@ -166,3 +166,7 @@ arnis-debug-processed_data.json
 arnis-debug-map.png
 */*.mca
 Ballina
+data/
+*.json
+src/*.ipynb
+src/*.npy

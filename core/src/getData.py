@@ -19,7 +19,7 @@ def getData(bbox, debug):
     overpass_query = f"""
         [out:json][bbox:{bbox[1]},{bbox[0]},{bbox[3]},{bbox[2]}];
         ( 
-        node;
+        node; 
         way;
         relation;
         );
@@ -44,7 +44,7 @@ def getData(bbox, debug):
         os._exit(1)
 
     if debug:
-        out_file = "arnis-debug-raw_data.json"
+        out_file = f"data/osm_{'_'.join(map(str, bbox))}_raw_data.json"
         with open(out_file, "w") as f:
             json.dump(data, f)
     return data
